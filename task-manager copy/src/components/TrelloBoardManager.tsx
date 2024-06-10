@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import {
@@ -42,9 +42,9 @@ const TrelloBoardManager: React.FC = () => {
   const [columns, setColumns] = useState<Column[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [boardId, setBoardId] = useState<string>("");
-  const [searchQuery, setSearchQuery] = useState<string>(""); 
-  const [selectedTask, setSelectedTask] = useState<Task | null>(null); 
-  const [sortOrder, setSortOrder] = useState<string>("desc"); 
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [sortOrder, setSortOrder] = useState<string>("desc");
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const navigate = useNavigate();
@@ -58,7 +58,6 @@ const TrelloBoardManager: React.FC = () => {
     }
   }, [navigate]);
 
- 
   const fetchBoardId = async () => {
     try {
       const response = await axios.get(`${BASE_URL}/members/me/boards`, {
@@ -67,15 +66,15 @@ const TrelloBoardManager: React.FC = () => {
           token: TOKEN,
         },
       });
-      setBoardId(response.data[0].id); 
+      setBoardId(response.data[0].id);
     } catch (error) {
       console.error("Error getting board ID:", error);
     }
   };
 
-  
-  const getColumnsAndTasks = async () => {
-    if (!boardId) return; 
+  const getColumnsAndTasks = useCallback(async () => {
+    if (!boardId) return; // Added check to ensure boardId is available
+
     try {
       const columnsResponse = await axios.get(
         `${BASE_URL}/boards/${boardId}/lists`,
@@ -102,7 +101,7 @@ const TrelloBoardManager: React.FC = () => {
       const allTasks = tasksResponses.flatMap((response) =>
         response.data.map((task: any) => ({
           ...task,
-          date: task.dateLastActivity, 
+          date: new Date().toISOString(), // Add the current date
         }))
       );
 
@@ -110,8 +109,7 @@ const TrelloBoardManager: React.FC = () => {
     } catch (error) {
       console.error("Error getting columns and tasks:", error);
     }
-  };
-
+  }, [boardId]);
   // Function to create a new task
   const createTask = async (listId: string, name: string, desc: string) => {
     try {
@@ -142,7 +140,7 @@ const TrelloBoardManager: React.FC = () => {
         },
       });
       getColumnsAndTasks(); // Refresh the tasks list
-      onClose(); 
+      onClose();
     } catch (error) {
       console.error("Error updating task:", error);
     }
@@ -168,12 +166,12 @@ const TrelloBoardManager: React.FC = () => {
   //   if (boardId) {
   //     getColumnsAndTasks();
   //   }
-  // }, [boardId]); 
+  // }, [boardId]);
   useEffect(() => {
     if (boardId) {
       getColumnsAndTasks();
     }
-  }, [boardId, getColumnsAndTasks]); 
+  }, [boardId, getColumnsAndTasks]);
 
   // Filter tasks based on search query
   const filteredTasks = tasks.filter(
@@ -208,7 +206,7 @@ const TrelloBoardManager: React.FC = () => {
           type="text"
           placeholder="Search tasks..."
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)} 
+          onChange={(e) => setSearchQuery(e.target.value)}
         />
       </Flex>
       <Flex justifyContent="center" mb={4}>
