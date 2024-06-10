@@ -8,7 +8,7 @@ import {
   Flex,
   Heading,
   Input,
-  ChakraProvider,
+
 } from "@chakra-ui/react";
 
 const SignUp: React.FC = () => {

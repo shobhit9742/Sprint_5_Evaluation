@@ -2,15 +2,7 @@
 
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Box,
-  Button,
-  Flex,
-  Heading,
-  Input,
-  Text,
-  ChakraProvider,
-} from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, Input, Text } from "@chakra-ui/react";
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState<string>("");

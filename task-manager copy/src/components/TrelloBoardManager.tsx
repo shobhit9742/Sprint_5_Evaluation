@@ -164,11 +164,16 @@ const TrelloBoardManager: React.FC = () => {
   };
 
   // Fetch columns and tasks when boardId changes
+  // useEffect(() => {
+  //   if (boardId) {
+  //     getColumnsAndTasks();
+  //   }
+  // }, [boardId]); 
   useEffect(() => {
     if (boardId) {
       getColumnsAndTasks();
     }
-  }, [boardId]); 
+  }, [boardId, getColumnsAndTasks]); 
 
   // Filter tasks based on search query
   const filteredTasks = tasks.filter(
