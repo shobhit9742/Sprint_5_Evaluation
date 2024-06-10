@@ -42,9 +42,9 @@ const TrelloBoardManager: React.FC = () => {
   const [columns, setColumns] = useState<Column[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [boardId, setBoardId] = useState<string>("");
-  const [searchQuery, setSearchQuery] = useState<string>(""); // State for search query
-  const [selectedTask, setSelectedTask] = useState<Task | null>(null); // State for selected task for modal
-  const [sortOrder, setSortOrder] = useState<string>("desc"); // State for sorting order
+  const [searchQuery, setSearchQuery] = useState<string>(""); 
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null); 
+  const [sortOrder, setSortOrder] = useState<string>("desc"); 
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const navigate = useNavigate();
@@ -58,7 +58,7 @@ const TrelloBoardManager: React.FC = () => {
     }
   }, [navigate]);
 
-  // Fetch board ID (assuming first board for simplicity)
+ 
   const fetchBoardId = async () => {
     try {
       const response = await axios.get(`${BASE_URL}/members/me/boards`, {
@@ -67,16 +67,15 @@ const TrelloBoardManager: React.FC = () => {
           token: TOKEN,
         },
       });
-      setBoardId(response.data[0].id); // Use the first board ID
+      setBoardId(response.data[0].id); 
     } catch (error) {
       console.error("Error getting board ID:", error);
     }
   };
 
-  // Function to get all columns (lists) and tasks (cards)
+  
   const getColumnsAndTasks = async () => {
-    if (!boardId) return; // Added check to ensure boardId is available
-
+    if (!boardId) return; 
     try {
       const columnsResponse = await axios.get(
         `${BASE_URL}/boards/${boardId}/lists`,
@@ -103,7 +102,7 @@ const TrelloBoardManager: React.FC = () => {
       const allTasks = tasksResponses.flatMap((response) =>
         response.data.map((task: any) => ({
           ...task,
-          date: task.dateLastActivity, // Use Trello's dateLastActivity field
+          date: task.dateLastActivity, 
         }))
       );
 
@@ -143,7 +142,7 @@ const TrelloBoardManager: React.FC = () => {
         },
       });
       getColumnsAndTasks(); // Refresh the tasks list
-      onClose(); // Close the modal
+      onClose(); 
     } catch (error) {
       console.error("Error updating task:", error);
     }
@@ -158,7 +157,7 @@ const TrelloBoardManager: React.FC = () => {
           token: TOKEN,
         },
       });
-      getColumnsAndTasks(); // Refresh the tasks list
+      getColumnsAndTasks();
     } catch (error) {
       console.error("Error deleting task:", error);
     }
@@ -169,7 +168,7 @@ const TrelloBoardManager: React.FC = () => {
     if (boardId) {
       getColumnsAndTasks();
     }
-  }, [boardId]); // Dependency on boardId to refetch when it changes
+  }, [boardId]); 
 
   // Filter tasks based on search query
   const filteredTasks = tasks.filter(
@@ -204,7 +203,7 @@ const TrelloBoardManager: React.FC = () => {
           type="text"
           placeholder="Search tasks..."
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)} // Update search query state
+          onChange={(e) => setSearchQuery(e.target.value)} 
         />
       </Flex>
       <Flex justifyContent="center" mb={4}>
